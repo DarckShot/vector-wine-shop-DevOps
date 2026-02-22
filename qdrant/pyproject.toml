@@ -1,0 +1,9 @@
+[project]
+name = "qdrant-loader"
+version = "0.1.0"
+requires-python = ">=3.13"
+dependencies = [
+    "fastembed",
+    "pandas>=3.0.1",
+    "qdrant-client",
+]
