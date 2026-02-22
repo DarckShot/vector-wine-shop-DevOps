@@ -1,24 +1,19 @@
-from pydantic import BaseModel
-from uuid import UUID
-from typing import Literal
+from pydantic import BaseModel, ConfigDict, Field
+from pydantic.alias_generators import to_camel
+
+from wines_rag.entities.qdrant import WineBase
 
 
 class CartPutRequest(BaseModel):
-    count: int
+    count: int = Field(ge=1,le=1000)
 
 
 class CartPutResponse(BaseModel):
-    updatedCount: int
+    updated_count: int
+    model_config = ConfigDict(alias_generator=to_camel,from_attributes=True,populate_by_name=True)
 
 
-class Wine(BaseModel):
-    id: UUID
-    name: str
-    description: str
-    price: float
-    color: Literal["red", "white"]
-    acidity: Literal["dry", "semi-dry", "semi-sweet", "sweet"]
-    country: str
+class Wine(WineBase):
     count: int
 
 

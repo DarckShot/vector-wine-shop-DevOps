@@ -1,15 +1,19 @@
 import asyncio
-from typing import List
+from typing import List, Optional
 from fastembed import TextEmbedding
 from wines_rag.config import Config
 from openai import AsyncOpenAI
 from wines_rag.entities.qdrant import WineBase
 
 class ModelService:
-    def __init__(self, config:Config):
+    def __init__(self, config:Config,
+                embedding_model: Optional[TextEmbedding] = None,
+                generative_model: Optional[AsyncOpenAI] = None):
         print(f"Loading FastEmbed model: {config.model.embedding.model}...")
-        self.embedding_model = TextEmbedding(model_name=config.model.embedding.model)
-        self.generative_model = AsyncOpenAI(api_key=config.model.generative.api_key,base_url=config.model.generative.url)
+        self.embedding_model = embedding_model 
+        self.generative_model = generative_model
+        self.generative_model_name = config.model.generative.model 
+        
         print("FastEmbed model loaded successfully.")
 
     async def encode(self, text: str) -> List[float]:
@@ -52,7 +56,7 @@ class ModelService:
         
         try:
             response = await self.generative_model.chat.completions.create(
-                model="deepseek-chat",
+                model=self.generative_model_name,
                 messages=[
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_prompt}
