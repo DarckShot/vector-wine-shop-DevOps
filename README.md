@@ -11,4 +11,4 @@ QDRANT__SERVICE__API_KEY=ваш_ключ \
 QDRANT__URL="http://qdrant:6333" \
 MODEL__GENERATIVE__API_KEY=ваш_ключ \
 выполнить: docker compose up -d \
-просмотр логов: docker compose logs -f \
+просмотр логов: docker compose logs -f 
