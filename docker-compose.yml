@@ -1,5 +1,32 @@
 
 services:
+  backend:
+    image: wines_rag_backend
+    container_name: wines_rag_backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      - HF_HOME=/app/.cache/huggingface
+      - FASTEMBED_CACHE_PATH=/app/.cache/fastembed
+    depends_on:
+      - qdrant
+    restart: unless-stopped
+    networks:
+      - wines_rag_network
+    volumes:
+      - ./config.yaml:/app/config.yaml:ro
+  qdrant-loader:
+    build: ./qdrant_loader
+    container_name: qdrant_loader
+    env_file:
+      - .env
+    depends_on:
+      - qdrant
+    networks:
+      - wines_rag_network
+    restart: "no"
   qdrant:
     image: qdrant/qdrant:latest
     container_name: qdrant
@@ -8,5 +35,15 @@ services:
       - "6334:6334"
     volumes:
       - ./qdrant_storage:/qdrant/storage
-    environment:
-      - QDRANT__SERVICE__API_KEY=secret
+    env_file:
+      - .env
+    networks:
+      - wines_rag_network
+    restart: unless-stopped
+
+networks:
+  wines_rag_network:
+    driver: bridge
+
+volumes:
+  qdrant_storage:

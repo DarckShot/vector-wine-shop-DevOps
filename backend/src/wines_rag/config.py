@@ -1,28 +1,38 @@
 from pydantic import BaseModel
-from pydantic_settings import BaseSettings, DotEnvSettingsSource, PydanticBaseSettingsSource, SettingsConfigDict, YamlConfigSettingsSource
+from pydantic_settings import (
+    BaseSettings,
+    DotEnvSettingsSource,
+    PydanticBaseSettingsSource,
+    SettingsConfigDict,
+    YamlConfigSettingsSource,
+)
 
 
 class QdrantConfig(BaseModel):
-    url: str
+    url: str | None = None
     collection_name: str
-    api_key: str| None = None
+    api_key: str | None = None
+
 
 class PathSettings(BaseModel):
     yaml_path: str = None
     env_path: str = None
 
+
 class GenerativeConfig(BaseModel):
     url: str
     model: str
-    api_key: str|None = None
-    
+    api_key: str | None = None
+
+
 class EmbeddingConfig(BaseModel):
     model: str
-    
+
+
 class Model(BaseModel):
     embedding: EmbeddingConfig
     generative: GenerativeConfig
-    
+
 
 class Config(BaseSettings):
     qdrant: QdrantConfig
@@ -38,8 +48,8 @@ class Config(BaseSettings):
         settings_cls: type[BaseSettings],
         init_settings: PydanticBaseSettingsSource,
         env_settings: PydanticBaseSettingsSource,
-        dotenv_settings: PydanticBaseSettingsSource,  
-        file_secret_settings: PydanticBaseSettingsSource, 
+        dotenv_settings: PydanticBaseSettingsSource,
+        file_secret_settings: PydanticBaseSettingsSource,
     ) -> tuple[PydanticBaseSettingsSource, ...]:
         return (
             init_settings,

@@ -136,6 +136,7 @@ celerybeat.pid
 
 # Environments
 .env
+.env.local
 .envrc
 .venv
 env/
@@ -208,3 +209,4 @@ __marimo__/
 
 # Qdrant
 qdrant_storage
+

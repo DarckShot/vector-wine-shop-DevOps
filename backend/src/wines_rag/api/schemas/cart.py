@@ -5,12 +5,14 @@ from wines_rag.entities.qdrant import WineBase
 
 
 class CartPutRequest(BaseModel):
-    count: int = Field(ge=1,le=1000)
+    count: int = Field(ge=1, le=1000)
 
 
 class CartPutResponse(BaseModel):
     updated_count: int
-    model_config = ConfigDict(alias_generator=to_camel,from_attributes=True,populate_by_name=True)
+    model_config = ConfigDict(
+        alias_generator=to_camel, from_attributes=True, populate_by_name=True
+    )
 
 
 class Wine(WineBase):
