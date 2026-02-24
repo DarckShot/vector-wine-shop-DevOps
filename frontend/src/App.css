@@ -1,0 +1,63 @@
+:root {
+  --bg: #fbf7ee;
+  --text: #2b2b2b;
+  --muted: #6b6b6b;
+  --accent: #7b2f2f;
+  --accent-2: #c99b6b;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  margin: 0;
+  padding: 0;
+  font-family: "Comfortaa", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-kerning: normal;
+  line-height: 1.55;
+  -webkit-text-size-adjust: 100%;
+  font-weight: 400;
+  letter-spacing: 0.2px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--text);
+  letter-spacing: -0.2px;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.12;
+  text-rendering: optimizeLegibility;
+}
+
+h1 {
+  font-size: clamp(1.6rem, 3.8vw, 2.6rem);
+}
+h2 {
+  font-size: clamp(1.4rem, 3.2vw, 2rem);
+}
+h3 {
+  font-size: clamp(1.2rem, 2.4vw, 1.5rem);
+}
+
+p {
+  margin: 0 0 1rem 0;
+  color: var(--text);
+}
+
+a {
+  transition:
+    color 200ms ease,
+    transform 200ms ease;
+}
+
+a:hover {
+  color: var(--accent-2);
+  transform: translateY(-1px);
+}
