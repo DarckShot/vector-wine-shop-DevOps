@@ -1,0 +1,52 @@
+.header {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+
+  padding: 1rem;
+
+  border-bottom: 4px solid var(--accent);
+
+  .headerTitle {
+    line-height: 42px;
+    margin: 0;
+  }
+
+  .basketLink {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 25%;
+    background-color: rgb(var(--accent-rgb) / 0.2);
+
+    transition:
+      background-color 250ms ease,
+      transform 250ms ease;
+    will-change: background-color, transform;
+
+    animation: none;
+  }
+
+  .basketLink:hover {
+    background-color: rgb(var(--accent-rgb) / 1);
+    transform: scale(1.05);
+    animation: pulse 1s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%,
+    100% {
+      transform: scale(1.05);
+    }
+    50% {
+      transform: scale(1.08);
+    }
+  }
+}

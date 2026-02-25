@@ -1,11 +1,19 @@
 import "./App.css";
 import GlobalPageWrapper from "./components/GlobalPageWrapper/GlobalPageWrapper";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import ChatPage from "./pages/ChatPage/ChatPage";
+import CartPage from "./pages/CartPage/CartPage";
 
 function App() {
   return (
-    <GlobalPageWrapper>
-      <h1>Страница</h1>
-    </GlobalPageWrapper>
+    <BrowserRouter>
+      <GlobalPageWrapper>
+        <Routes>
+          <Route path="/" element={<ChatPage />} />
+          <Route path="/basket" element={<CartPage />} />
+        </Routes>
+      </GlobalPageWrapper>
+    </BrowserRouter>
   );
 }
 

@@ -107,6 +107,10 @@ section {
   display: block;
 }
 
+main {
+  width: 100%;
+}
+
 html,
 body,
 #root {
