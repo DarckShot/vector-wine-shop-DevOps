@@ -3,6 +3,9 @@
 ## сборка образа бэкенда
 docker build -t wines_rag_backend .
 
+## сборка образа фронтенда
+docker build -t wines_frontend .
+
 ## Запуск всего приложения в докере
 создать предварительно файлк .env рядом с docker-compose.yml \
 обязательно задать: \ 
