@@ -2,7 +2,6 @@ import axios from "axios";
 import type {
   UUID,
   Wine,
-  CartWine,
   SearchWinesRequest,
   SearchWinesResponse,
   GetCartWinesResponse,
@@ -38,8 +37,6 @@ const MOCK_WINES: Wine[] = [
   },
 ];
 
-const MOCK_CART: CartWine[] = MOCK_WINES.map((w) => ({ ...w, count: 1 }));
-
 // POST /search/wines
 export const searchWines = async (
   payload: SearchWinesRequest,
@@ -72,11 +69,11 @@ export const addWineToCart = async (
 
 // GET /cart/wines
 export const getCartWines = async (): Promise<GetCartWinesResponse> => {
-  // const { data } = await api.get<GetCartWinesResponse>("/cart/wines");
-  // return data;
-  console.log("getCartWines");
+  // console.log("getCartWines");
+  // return { wines: MOCK_CART };
 
-  return { wines: MOCK_CART };
+  const { data } = await api.get<GetCartWinesResponse>("/cart/wines");
+  return data;
 };
 
 // PUT /cart/wines/:wine_id

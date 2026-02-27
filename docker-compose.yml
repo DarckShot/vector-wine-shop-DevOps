@@ -1,4 +1,3 @@
-
 services:
   backend:
     image: wines_rag_backend
@@ -37,6 +36,17 @@ services:
       - ./qdrant_storage:/qdrant/storage
     env_file:
       - .env
+    networks:
+      - wines_rag_network
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    container_name: wines_frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
     networks:
       - wines_rag_network
     restart: unless-stopped
