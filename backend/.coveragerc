@@ -1,0 +1,44 @@
+[run]
+source = wines_rag
+omit =
+    # Исключить тесты
+    */tests/*
+    src/tests/*
+
+    # Исключить конфигурационные файлы
+    */settings.py
+    wines_rag/config/*
+
+    # Исключить миграции
+    */migrations/*
+
+    # Исключить __init__.py (если не содержат логики)
+    */__init__.py
+
+    # Исключить конкретные файлы
+    src/wines_rag/api/dependencies.py
+    src/wines_rag/app.py
+
+    # Исключить виртуальное окружение
+    */venv/*
+    */.venv/*
+    */site-packages/*
+
+[report]
+exclude_lines =
+    # Стандартные исключения
+    pragma: no cover
+    def __repr__
+    raise AssertionError
+    raise NotImplementedError
+    if __name__ == .__main__.:
+    if TYPE_CHECKING:
+    @abstractmethod
+
+    # Исключить отладочный код
+    print\(
+    pdb.set_trace
+
+show_missing = True
+precision = 2
+fail_under = 80

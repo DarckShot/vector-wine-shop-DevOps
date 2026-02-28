@@ -10,7 +10,7 @@ docker build -t wines_frontend .
 создать предварительно файлк .env рядом с docker-compose.yml \
 обязательно задать: \ 
 QDRANT__API_KEY=ваш_ключ \
-QDRANT__SERVICE__API_KEY=ваш_ключ \
+QDRANT__SERVICE__API_KEY=QDRANT__API_KEY \
 QDRANT__URL="http://qdrant:6333" \
 MODEL__GENERATIVE__API_KEY=ваш_ключ \
 выполнить: docker compose up -d \
