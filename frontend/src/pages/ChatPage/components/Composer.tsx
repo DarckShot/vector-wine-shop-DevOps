@@ -82,7 +82,7 @@ const Composer = ({
         />
         <input
           type="number"
-          placeholder="Макс. цена"
+          placeholder="Макс. цена (до 100.000)"
           className={getFieldClass(
             styles.priceInput,
             errors.maxPrice ||

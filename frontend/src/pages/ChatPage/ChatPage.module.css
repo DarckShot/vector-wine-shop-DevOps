@@ -181,6 +181,12 @@
   font-size: 0.92rem;
 }
 
+.priceInput::placeholder {
+  text-align: left;
+
+  font-size: 0.68rem;
+}
+
 .priceInput:focus {
   border-color: rgb(var(--accent-rgb) / 0.55);
   box-shadow: 0 0 0 4px rgb(var(--accent-rgb) / 0.18);

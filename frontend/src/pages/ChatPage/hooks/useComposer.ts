@@ -18,6 +18,8 @@ type UseComposerArgs = {
   onSend: () => void;
 };
 
+const MAX_PRICE_LIMIT = 100000;
+
 export function useComposer({
   value,
   setValue,
@@ -57,6 +59,9 @@ export function useComposer({
     const missingMin = isBlank(minPrice);
     const missingMax = isBlank(maxPrice);
 
+    const maxPriceExceeded =
+      !isBlank(maxPrice) && Number(maxPrice) > MAX_PRICE_LIMIT;
+
     let hasError = false;
     if (missingValue) {
       triggerError("value");
@@ -67,6 +72,10 @@ export function useComposer({
       hasError = true;
     }
     if (missingMax) {
+      triggerError("maxPrice");
+      hasError = true;
+    }
+    if (maxPriceExceeded) {
       triggerError("maxPrice");
       hasError = true;
     }
