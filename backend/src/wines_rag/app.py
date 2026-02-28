@@ -14,6 +14,7 @@ from wines_rag.api.routes.api import router as health_router
 from wines_rag.api.routes.chat import router as chat_router
 from wines_rag.api.routes.cart import router as cart_router
 from pathlib import Path
+from fastapi.middleware.cors import CORSMiddleware
 
 APP_DIR = Path(__file__).parent
 PROJECT_ROOT = APP_DIR.parent
@@ -45,6 +46,13 @@ app = FastAPI(lifespan=lifespan)
 app.include_router(health_router)
 app.include_router(chat_router)
 app.include_router(cart_router)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.exception_handler(WineNotFoundException)
