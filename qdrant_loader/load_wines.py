@@ -52,8 +52,9 @@ COLLECTION_NAME = os.getenv("QDRANT__COLLECTION_NAME", "wines")
 
 # первая часть - создание коллецкии, если ее нет
 client = QdrantClient(url=QDRANT_URL, api_key=QDRANT_API_KEY)
+collection_exists = client.collection_exists(COLLECTION_NAME)
 
-if not client.collection_exists(COLLECTION_NAME):
+if not collection_exists:
     client.create_collection(
         collection_name=COLLECTION_NAME,
         vectors_config={
@@ -62,44 +63,42 @@ if not client.collection_exists(COLLECTION_NAME):
         sparse_vectors_config={"bm25": SparseVectorParams(index=SparseIndexParams())},
     )
 
+    # вторая часть - прогрузка вин
+    df = pd.read_csv("wines.csv", encoding="utf-8-sig")
+    client.create_payload_index(
+        collection_name=COLLECTION_NAME,
+        field_name="price",
+        field_schema=PayloadSchemaType.FLOAT,
+    )
 
-# вторая часть - прогрузка вин
-df = pd.read_csv("wines.csv", encoding="utf-8-sig")
-client.create_payload_index(
-    collection_name=COLLECTION_NAME,
-    field_name="price",
-    field_schema=PayloadSchemaType.FLOAT,
-)
+    points = []
+    for _, row in df.iterrows():
+        dense_vector = json.loads(row["dense_vector"])
+        price_str = str(row["price"]).replace(",", ".").replace(" ", "")
 
-points = []
-for _, row in df.iterrows():
-    dense_vector = json.loads(row["dense_vector"])
-    price_str = str(row["price"]).replace(",", ".").replace(" ", "")
+        payload = {
+            "name": row["name"],
+            "description": row["description"],
+            "price": float(price_str),
+            "acidity": row["acidity"],
+            "color": row["color"],
+            "country": row["country"],
+            "count": 0,
+        }
 
-    payload = {
-        "name": row["name"],
-        "description": row["description"],
-        "price": float(price_str),
-        "acidity": row["acidity"],
-        "color": row["color"],
-        "country": row["country"],
-        "count": 0,
-    }
+        bm25_text = f"{row['name']} {row['description']} {row['country']} {row["acidity"]} {row["color"]}"
+        pid = uuid4()
+        point = {
+            "id": pid,
+            "vector": {
+                "dense_vector": dense_vector,
+                "bm25": {"text": bm25_text, "model": "qdrant/bm25"},
+            },
+            "payload": payload,
+        }
+        points.append(point)
 
-    bm25_text = f"{row['name']} {row['description']} {row['country']} {row["acidity"]} {row["color"]}"
-    pid = uuid4()
-    point = {
-        "id": pid,
-        "vector": {
-            "dense_vector": dense_vector,
-            "bm25": {"text": bm25_text, "model": "qdrant/bm25"},
-        },
-        "payload": payload,
-    }
-    points.append(point)
-
-
-for i in range(0, len(points), 100):
-    batch = points[i : i + 100]
-    client.upsert(collection_name=COLLECTION_NAME, points=batch)
-    print(f"Загружено {min(i+100, len(points))} из {len(points)}")
+    for i in range(0, len(points), 100):
+        batch = points[i : i + 100]
+        client.upsert(collection_name=COLLECTION_NAME, points=batch)
+        print(f"Загружено {min(i+100, len(points))} из {len(points)}")
