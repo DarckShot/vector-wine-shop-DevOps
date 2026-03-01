@@ -29,7 +29,7 @@ describe("ChatPage", () => {
       </MemoryRouter>,
     );
 
-    expect(screen.getByText("Отправка...")).toBeInTheDocument();
+    expect(screen.getByText("Печатаю...")).toBeInTheDocument();
   });
 
   it("renders messages when provided by useChat", async () => {

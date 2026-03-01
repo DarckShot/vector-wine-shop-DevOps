@@ -71,7 +71,7 @@ const Chat = () => {
 
             {loading && (
               <div className={styles.msgBot}>
-                <div className={styles.msgBubble}>Отправка...</div>
+                <div className={styles.msgBubble}>Печатаю...</div>
               </div>
             )}
           </div>
