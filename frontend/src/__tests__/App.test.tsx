@@ -6,7 +6,7 @@ describe("App", () => {
   it("renders Chat page by default", () => {
     // polyfill scrollTo used by ChatPage
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (global as any).HTMLElement.prototype.scrollTo = () => {};
+    (globalThis as any).HTMLElement.prototype.scrollTo = () => {};
 
     render(<App />);
     // Header title 'Чат' should be present from ChatPage

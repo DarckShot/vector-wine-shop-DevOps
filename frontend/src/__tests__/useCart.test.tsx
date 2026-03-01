@@ -1,7 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import React from "react";
-
 describe("useCart", () => {
   let getCartWines: ReturnType<typeof vi.fn>;
   let updateCartWineCount: ReturnType<typeof vi.fn>;
@@ -41,7 +39,7 @@ describe("useCart", () => {
     updateCartWineCount.mockResolvedValue({ updatedCount: 2 });
     deleteWineFromCart.mockResolvedValue({});
 
-    const { default: ReactModule } = await import("react");
+    await import("react");
     const { useCart } = await import("../pages/CartPage/hooks/useCart");
 
     function TestComponent() {
@@ -61,7 +59,7 @@ describe("useCart", () => {
       );
     }
 
-    const { rerender } = render(<TestComponent />);
+    render(<TestComponent />);
 
     await waitFor(() => expect(getCartWines).toHaveBeenCalled());
     expect(screen.getByText("A")).toBeInTheDocument();

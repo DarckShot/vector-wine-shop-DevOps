@@ -22,7 +22,7 @@ describe("ChatPage", () => {
     const { MemoryRouter } = await import("react-router-dom");
     // polyfill scrollTo used in ChatPage
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (global as any).HTMLElement.prototype.scrollTo = () => {};
+    (globalThis as any).HTMLElement.prototype.scrollTo = () => {};
     render(
       <MemoryRouter>
         <ChatPage />
@@ -53,7 +53,7 @@ describe("ChatPage", () => {
     const { MemoryRouter } = await import("react-router-dom");
     // polyfill scrollTo used in ChatPage
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (global as any).HTMLElement.prototype.scrollTo = () => {};
+    (globalThis as any).HTMLElement.prototype.scrollTo = () => {};
     render(
       <MemoryRouter>
         <ChatPage />
@@ -97,7 +97,7 @@ describe("ChatPage", () => {
     const { default: ChatPage } = await import("../pages/ChatPage/ChatPage");
     const { MemoryRouter } = await import("react-router-dom");
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (global as any).HTMLElement.prototype.scrollTo = () => {};
+    (globalThis as any).HTMLElement.prototype.scrollTo = () => {};
 
     render(
       <MemoryRouter>

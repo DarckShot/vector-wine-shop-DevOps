@@ -14,7 +14,7 @@ describe("useChat", () => {
   });
 
   it("send adds user and bot messages on success", async () => {
-    const api = await import("../api/api");
+    await import("../api/api");
     searchWines.mockResolvedValueOnce({ summary: "ok", wines: [] });
 
     const { result } = await import("../pages/ChatPage/hooks/useChat").then(
