@@ -1,13 +1,30 @@
+---
+# Playbook Ansible: установка Docker Engine и плагина docker-compose на целевые хосты.
+#
+# Описание:
+# - Подключается к хостам из группы `servers` в инвентаре
+# - Обновляет кеш apt, устанавливает docker.io и docker-compose (v2),
+#   запускает и включает сервис Docker и добавляет пользователя `ubuntu` в группу docker.
+#
+# Примечания:
+# - Запускать этот playbook нужно с контроллера, у которого настроен доступ по SSH
+#   к целевым хостам и правильно настроен inventory (например, файл hosts).
+
 - name: Install Docker on VM
   hosts: servers
   become: true
 
   tasks:
     - name: Update apt cache
+      # Обновляем локальный кеш пакетов apt, чтобы последующие установки
+      # использовали актуальные индексы пакетов.
       apt:
         update_cache: true
 
     - name: Install Docker engine and compose plugin
+      # Устанавливаем пакет docker.io (удобный пакет для Ubuntu) и
+      # docker-compose-v2 (плагин V2). Можно заменить на установку
+      # официальных пакетов docker-ce/containerd по потребности.
       apt:
         name:
           - docker.io
@@ -15,12 +32,17 @@
         state: present
 
     - name: Start and enable Docker
+      # Включаем и запускаем сервис Docker, чтобы контейнеры могли быть запущены
+      # сразу после установки и при перезагрузке хоста.
       service:
         name: docker
         state: started
         enabled: true
 
     - name: Add ubuntu user to docker group
+      # Добавляем системного/пользовательского юзера `ubuntu` в группу `docker`,
+      # чтобы можно было запускать docker-команды без sudo.
+      # Замените имя пользователя, если ваш целевой пользователь другой.
       user:
         name: ubuntu
         groups: docker

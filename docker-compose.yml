@@ -1,40 +1,56 @@
 services:
   backend:
+    # Имя образа локально
     image: wines_rag_backend
+    # Альтернативно: можно собирать образ из локального каталога
     build: ./backend
+    # Удобное имя контейнера для локального окружения
     container_name: wines_rag_backend
+    # Проброс порта: внешний 8000 -> внутр. 8000 (где слушает Uvicorn)
     ports:
       - "8000:8000"
+    # Загружаем переменные окружения из файла .env
     env_file:
       - .env
+    # Дополнительные переменные окружения, специфичные для приложения
     environment:
       - HF_HOME=/app/.cache/huggingface
       - FASTEMBED_CACHE_PATH=/app/.cache/fastembed
     depends_on:
       - qdrant
+    # Политика рестарта контейнера в случае краша
     restart: unless-stopped
+    # Сеть, в которой находятся все сервисы приложения
     networks:
       - wines_rag_network
+    # Монтируем локальный конфиг в контейнер (только для чтения)
     volumes:
       - ./config.yaml:/app/config.yaml:ro
   qdrant-loader:
+    # Сборка из локальной папки qdrant_loader
     build: ./qdrant_loader
     container_name: qdrant_loader
+    # Загружаем те же переменные окружения (.env) — часто содержит URL/ключи
     env_file:
       - .env
     depends_on:
       - qdrant
     networks:
       - wines_rag_network
+    # Не перезапускаем автоматически — загрузчик запускается вручную/один раз
     restart: "no"
+
   qdrant:
     image: qdrant/qdrant:latest
     container_name: qdrant
+    # Проброс портов: 6333 (HTTP/REST), 6334 (gRPC/внутреннее)
     ports:
       - "6333:6333"
       - "6334:6334"
+    # Храним данные на хосте в ./qdrant_storage, чтобы были персистентные данные
     volumes:
       - ./qdrant_storage:/qdrant/storage
+    # Qdrant тоже может читать настройки из .env (например, API_KEY)
     env_file:
       - .env
     networks:
@@ -44,6 +60,7 @@ services:
   frontend:
     build: ./frontend
     container_name: wines_frontend
+    # Проброс порта 80 (http)
     ports:
       - "80:80"
     depends_on:
@@ -52,9 +69,11 @@ services:
       - wines_rag_network
     restart: unless-stopped
 
+# Сеть для внутренней коммуникации контейнеров
 networks:
   wines_rag_network:
     driver: bridge
 
+# Определение именованных томов (если нужно)
 volumes:
   qdrant_storage:
