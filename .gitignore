@@ -211,3 +211,30 @@ __marimo__/
 qdrant_storage
 
 .idea/
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+*.tfvars
+*.tfvars.json
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+terraform.rc
+
+# Ansible
+*.retry
+inventory.ini
+ansible.cfg
+
+# Docker
+*.log
+.env
+
+# System files
+.DS_Store
+*.swp
+*.swo
+*~

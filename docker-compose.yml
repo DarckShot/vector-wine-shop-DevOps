@@ -1,6 +1,7 @@
 services:
   backend:
     image: wines_rag_backend
+    build: ./backend
     container_name: wines_rag_backend
     ports:
       - "8000:8000"
