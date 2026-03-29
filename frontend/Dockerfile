@@ -1,18 +1,16 @@
 FROM node:20-alpine AS build
 WORKDIR /app
 
-# Копируем только package файлы
-COPY package*.json ./
+COPY package.json package-lock.json ./
 
-# Очищаем кэш и устанавливаем зависимости с указанием платформы
-RUN rm -rf node_modules package-lock.json && \
-    npm cache clean --force && \
-    npm install --platform=linux --arch=x64
+RUN npm ci --platform=linux --arch=x64
 
-# Копируем остальные файлы
-COPY . .
+COPY index.html ./
+COPY tsconfig.json tsconfig.app.json tsconfig.node.json ./
+COPY vite.config.ts ./
+COPY public ./public
+COPY src ./src
 
-# Собираем проект
 RUN npm run build
 
 FROM nginx:stable-alpine

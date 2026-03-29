@@ -1,0 +1,13 @@
+node_modules
+dist
+coverage
+.git
+.gitignore
+.agents
+.claude
+README.md
+eslint.config.js
+skills-lock.json
+vitest.config.ts
+vitest.setup.ts
+src/__tests__/
