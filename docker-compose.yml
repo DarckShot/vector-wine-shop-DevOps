@@ -53,7 +53,7 @@ services:
     env_file:
       - .env
     healthcheck:
-      test: ["CMD", "qdrant", "--version"]
+      test: ["CMD", "/qdrant/qdrant", "--version"]
       interval: 10s
       timeout: 5s
       retries: 5
