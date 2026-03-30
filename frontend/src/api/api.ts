@@ -11,8 +11,7 @@ import type {
 } from "./api.types";
 
 export const api = axios.create({
-  baseURL:
-    import.meta.env.VITE_API_BASE_URL ?? "http://api.89.223.45.218.nip.io",
+  baseURL: "http://api.89.223.45.218.nip.io",
 });
 
 // POST /search/wines
