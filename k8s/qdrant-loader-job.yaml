@@ -5,6 +5,7 @@ metadata:
   namespace: wine-app
 spec:
   backoffLimit: 3
+  ttlSecondsAfterFinished: 600
   template:
     spec:
       restartPolicy: Never

@@ -16,10 +16,12 @@ spec:
     spec:
       containers:
         - name: qdrant
-          image: qdrant/qdrant:latest
+          image: qdrant/qdrant:v1.13.4
           ports:
             - containerPort: 6333
           env:
+            - name: QDRANT__INFERENCE__ENABLED
+              value: "true"
             - name: QDRANT__API_KEY
               valueFrom:
                 secretKeyRef:

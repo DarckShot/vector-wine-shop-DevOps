@@ -8,5 +8,6 @@ spec:
   selector:
     app: qdrant
   ports:
-    - port: 6333
+    - name: http
+      port: 6333
       targetPort: 6333
