@@ -9,16 +9,12 @@ ENV HF_HOME=/app/.cache/huggingface \
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
-    build-essential \
-    && rm -rf /var/lib/apt/lists/*
+COPY --from=ghcr.io/astral-sh/uv:0.8.6 /uv /uvx /bin/
 
 COPY README.md pyproject.toml uv.lock ./
-COPY src ./src
 
-RUN pip install --no-cache-dir uv && \
-    uv sync --frozen --no-dev
+# Install third-party dependencies first to maximize cache reuse when app code changes.
+RUN uv sync --frozen --no-dev --no-install-project
 
 # Предзагружаем модели в build-слое, чтобы ускорить первый старт контейнера.
 RUN mkdir -p /app/.cache && \
@@ -28,6 +24,11 @@ RUN mkdir -p /app/.cache && \
     print('Downloading sparse model...'); \
     SparseTextEmbedding(model_name='qdrant/bm25'); \
     print('Models downloaded successfully!')"
+
+COPY src ./src
+
+# Install the local project after source copy; dependency layer above remains cacheable.
+RUN uv sync --frozen --no-dev
 
 
 FROM python:3.13-slim AS runtime
@@ -43,11 +44,9 @@ WORKDIR /app
 
 RUN useradd --create-home --shell /bin/bash appuser
 
-COPY --from=build /app/.venv /app/.venv
-COPY --from=build /app/.cache /app/.cache
-COPY --from=build /app/src /app/src
-
-RUN chown -R appuser:appuser /app
+COPY --from=build --chown=appuser:appuser /app/.venv /app/.venv
+COPY --from=build --chown=appuser:appuser /app/.cache /app/.cache
+COPY --from=build --chown=appuser:appuser /app/src /app/src
 
 USER appuser
 
