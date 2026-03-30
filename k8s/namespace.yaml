@@ -1,3 +1,4 @@
+# Назначение: создает отдельный namespace для всех ресурсов wine-приложения.
 apiVersion: v1
 kind: Namespace
 metadata:

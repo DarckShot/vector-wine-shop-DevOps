@@ -1,3 +1,4 @@
+# Назначение: политика автоскейлинга backend Deployment по утилизации CPU.
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:

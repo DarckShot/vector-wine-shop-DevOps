@@ -1,3 +1,4 @@
+# Назначение: настраивает Prometheus Operator на сбор метрик backend с /metrics.
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
@@ -16,4 +17,3 @@ spec:
     - port: http
       path: /metrics
       interval: 15s
-

@@ -1,3 +1,4 @@
+# Назначение: разворачивает векторную базу Qdrant, которую использует backend.
 apiVersion: apps/v1
 kind: Deployment
 metadata:

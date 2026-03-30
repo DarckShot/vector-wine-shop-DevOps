@@ -26,6 +26,7 @@ path_settings: PathSettings = PathSettings(
 
 
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
+    # Загружаем конфиг и создаем зависимости один раз на время жизни приложения.
     config = Config.load(path_settings=path_settings)
     print(f"Qdrant_url: {config.qdrant.url}")
     qdrant_client = QdrantService(config=config)
@@ -39,6 +40,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     app.state.generative_model = generative_model
     app.state.config = config
     yield
+    # Корректно закрываем сетевые клиенты при остановке приложения.
     await qdrant_client.close()
     await generative_model.close()
     print("QdrantService connection closed")
@@ -59,6 +61,7 @@ app.add_middleware(
 
 @app.middleware("http")
 async def collect_http_metrics(request: Request, call_next):
+    # Измеряем полную длительность обработки запроса, включая обработчики ошибок.
     start = perf_counter()
     status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
     try:
@@ -67,6 +70,7 @@ async def collect_http_metrics(request: Request, call_next):
         return response
     finally:
         duration = perf_counter() - start
+        # Если FastAPI уже определил route, используем шаблон пути (например /chat/{id}).
         route = request.scope.get("route")
         route_path = getattr(route, "path", request.url.path)
         metrics_registry.observe_request(

@@ -1,3 +1,4 @@
+# Назначение: разворачивает pod'ы frontend-приложения в namespace wine-app.
 apiVersion: apps/v1
 kind: Deployment
 metadata:

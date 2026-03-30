@@ -1,3 +1,4 @@
+# Назначение: разворачивает pod'ы backend API в namespace wine-app.
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -23,6 +24,7 @@ spec:
             - secretRef:
                 name: backend-secrets
           resources:
+            # CPU задается в millicores: 100m = 0.1 vCPU, 1000m = 1 vCPU.
             requests:
               cpu: "100m"
               memory: "768Mi"
