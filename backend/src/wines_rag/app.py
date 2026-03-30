@@ -1,4 +1,5 @@
 from typing import AsyncIterator
+from time import perf_counter
 
 from fastapi import FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
@@ -13,6 +14,7 @@ import uvicorn
 from wines_rag.api.routes.api import router as health_router
 from wines_rag.api.routes.chat import router as chat_router
 from wines_rag.api.routes.cart import router as cart_router
+from wines_rag.metrics import metrics_registry
 from pathlib import Path
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -53,6 +55,26 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.middleware("http")
+async def collect_http_metrics(request: Request, call_next):
+    start = perf_counter()
+    status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+    try:
+        response = await call_next(request)
+        status_code = response.status_code
+        return response
+    finally:
+        duration = perf_counter() - start
+        route = request.scope.get("route")
+        route_path = getattr(route, "path", request.url.path)
+        metrics_registry.observe_request(
+            method=request.method,
+            path=route_path,
+            status_code=status_code,
+            duration_seconds=duration,
+        )
 
 
 @app.exception_handler(WineNotFoundException)
