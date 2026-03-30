@@ -142,17 +142,6 @@ jobs:
           username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Create frontend .env from Secrets (if provided)
-        run: |
-          # If a single multiline secret FRONTEND_ENV exists, write it to frontend/.env
-          if [ -n "${{ secrets.FRONTEND_ENV }}" ]; then
-            mkdir -p frontend
-            echo "${{ secrets.FRONTEND_ENV }}" > frontend/.env
-            echo "Created frontend/.env from FRONTEND_ENV secret"
-          else
-            echo "No FRONTEND_ENV secret set; skipping .env creation"
-          fi
-
       - name: Build qdrant_loader Docker image
         run: docker build -t docker.io/${{ env.DOCKERHUB_USERNAME }}/qdrant-loader:latest ./qdrant_loader
 
@@ -194,6 +183,12 @@ jobs:
         with:
           username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Create frontend .env from secret (or empty)
+        run: |
+          mkdir -p frontend
+          printf '%s' "${{ secrets.FRONTEND_ENV }}" > frontend/.env
+          echo "frontend/.env prepared for Docker build"
 
       - name: Build frontend Docker image
         run: docker build -t docker.io/${{ env.DOCKERHUB_USERNAME }}/frontend:latest ./frontend
