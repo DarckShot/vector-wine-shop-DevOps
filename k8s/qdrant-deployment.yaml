@@ -18,3 +18,21 @@ spec:
           image: qdrant/qdrant:latest
           ports:
             - containerPort: 6333
+          env:
+            - name: QDRANT__API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secrets
+                  key: QDRANT__API_KEY
+            - name: QDRANT__SERVICE__API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secrets
+                  key: QDRANT__SERVICE__API_KEY
+          volumeMounts:
+            - name: qdrant-storage
+              mountPath: /qdrant/storage
+      volumes:
+        - name: qdrant-storage
+          persistentVolumeClaim:
+            claimName: qdrant-storage-pvc

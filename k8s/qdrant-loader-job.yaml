@@ -1,0 +1,24 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: qdrant-loader
+  namespace: wine-app
+spec:
+  backoffLimit: 3
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: qdrant-loader
+          image: darckshot/qdrant-loader:latest
+          imagePullPolicy: Always
+          env:
+            - name: QDRANT__URL
+              value: http://qdrant:6333
+            - name: QDRANT__API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secrets
+                  key: QDRANT__API_KEY
+            - name: QDRANT__COLLECTION_NAME
+              value: wines
