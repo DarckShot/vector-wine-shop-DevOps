@@ -5,6 +5,7 @@ COPY package.json package-lock.json ./
 
 RUN npm ci --platform=linux --arch=x64
 
+COPY .env ./
 COPY index.html ./
 COPY tsconfig.json tsconfig.app.json tsconfig.node.json ./
 COPY vite.config.ts ./
