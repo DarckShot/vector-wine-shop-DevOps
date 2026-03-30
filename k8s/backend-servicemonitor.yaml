@@ -3,7 +3,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: backend-monitor
-  namespace: monitoring
+  namespace: wine-app
   labels:
     release: kube-prom-stack
 spec:
