@@ -1,0 +1,51 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: wine-app-ingress
+  namespace: wine-app
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: frontend.89.223.45.218.nip.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend
+                port:
+                  number: 80
+
+    - host: api.89.223.45.218.nip.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: backend
+                port:
+                  number: 8000
+
+    - host: grafana.89.223.45.218.nip.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: kube-prom-stack-grafana
+                port:
+                  number: 80
+
+    - host: prometheus.89.223.45.218.nip.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: kube-prom-stack-kube-prome-prometheus
+                port:
+                  number: 9090

@@ -1,4 +1,3 @@
-# Назначение: настраивает Prometheus Operator на сбор метрик backend с /metrics.
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
@@ -7,9 +6,6 @@ metadata:
   labels:
     release: kube-prom-stack
 spec:
-  namespaceSelector:
-    matchNames:
-      - wine-app
   selector:
     matchLabels:
       app: backend
