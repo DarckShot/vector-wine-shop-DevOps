@@ -238,3 +238,5 @@ ansible.cfg
 *.swp
 *.swo
 *~
+qdrant_storage/
+.env
