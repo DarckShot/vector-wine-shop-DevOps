@@ -7,7 +7,7 @@ spec:
   project: default
 
   source:
-    repoURL: git@github.com:DarckShot/vector-wine-shop-DevOps.git
+    repoURL: ssh://git@ssh.github.com:443/DarckShot/vector-wine-shop-DevOps.git
     targetRevision: main
     path: k8s
 
