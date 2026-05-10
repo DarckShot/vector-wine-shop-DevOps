@@ -7,7 +7,7 @@ from qdrant_client.models import Filter
 class QueryPointsSearch(BaseModel):
     query: str
     top_k: Optional[int] = 5
-    score_threshold: Optional[float] = 0.5
+    score_threshold: Optional[float] = None
     filters: Filter
     embed_query: list[float]
 

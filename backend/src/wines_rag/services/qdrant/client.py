@@ -3,12 +3,8 @@ from uuid import UUID
 
 from qdrant_client import AsyncQdrantClient
 from qdrant_client.models import (
-    Document,
     FieldCondition,
     Filter,
-    Fusion,
-    FusionQuery,
-    Prefetch,
     Range,
     Record,
     ScoredPoint,
@@ -55,7 +51,6 @@ class QdrantService:
                 points=[point_id],
             )
             return True
-
         except Exception as e:
             print(f"Error updating payload for point {point_id}: {e}")
             return False
@@ -65,25 +60,11 @@ class QdrantService:
     ) -> list[ScoredPoint]:
         nearest = await self.client.query_points(
             collection_name=self.collection_name,
-            prefetch=[
-                Prefetch(
-                    query=query_points_search.embed_query,
-                    using="dense_vector",
-                    limit=query_points_search.top_k * 2,
-                    score_threshold=query_points_search.score_threshold,
-                    filter=query_points_search.filters,
-                ),
-                Prefetch(
-                    query=Document(text=query_points_search.query, model="qdrant/bm25"),
-                    using="bm25",
-                    limit=query_points_search.top_k * 2,
-                    score_threshold=query_points_search.score_threshold,
-                    filter=query_points_search.filters,
-                ),
-            ],
-            query=FusionQuery(fusion=Fusion.DBSF),
-            score_threshold=query_points_search.score_threshold,
+            query=query_points_search.embed_query,
+            using="dense_vector",
             limit=query_points_search.top_k,
+            score_threshold=query_points_search.score_threshold,
+            query_filter=query_points_search.filters,
+            with_payload=True,
         )
-        points = nearest.points
-        return points
+        return nearest.points
