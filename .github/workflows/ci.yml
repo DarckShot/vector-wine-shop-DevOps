@@ -195,3 +195,26 @@ jobs:
 
       - name: Push frontend Docker image
         run: docker push docker.io/${{ env.DOCKERHUB_USERNAME }}/frontend:latest
+
+  notify:
+    runs-on: ubuntu-latest
+    if: always()
+    needs:
+      - backend-test
+      - backend-build
+      - frontend-test
+      - frontend-build
+      - backend-push-dockerhub
+      - frontend-push-dockerhub
+      - qdrant-loader-push-dockerhub
+
+    steps:
+      - name: Send VK notification
+        run: |
+          curl -s "https://api.vk.com/method/messages.send" \
+            -d "peer_id=${{ secrets.VK_CHAT_ID }}" \
+            -d "message=Wine Shop CI/CD finished. Status: ${{ job.status }}" \
+            -d "random_id=$RANDOM" \
+            -d "access_token=${{ secrets.VK_TOKEN }}" \
+            -d "v=5.199"
+
