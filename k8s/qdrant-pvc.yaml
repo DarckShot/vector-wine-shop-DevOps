@@ -1,3 +1,4 @@
+# PVC для Qdrant — выделяет 2Gi хранилища в namespace wine-app
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
