@@ -1,0 +1,349 @@
+{
+  "dashboard": {
+    "uid": "wine-shop-pods",
+    "title": "Wine Shop - Monitoring",
+    "tags": [
+      "wine-app",
+      "prometheus",
+      "cloud"
+    ],
+    "timezone": "browser",
+    "schemaVersion": 39,
+    "version": 0,
+    "refresh": "10s",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Running pods",
+        "type": "stat",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "gridPos": {
+          "h": 4,
+          "w": 6,
+          "x": 0,
+          "y": 0
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "datasource": {
+              "type": "prometheus",
+              "uid": "prometheus"
+            },
+            "expr": "count(kube_pod_status_phase{namespace=\"wine-app\",phase=\"Running\",pod=~\"backend.*|frontend.*|qdrant-[0-9a-z].*\"} == 1)",
+            "instant": true,
+            "format": "time_series"
+          }
+        ],
+        "options": {
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ]
+          }
+        }
+      },
+      {
+        "id": 2,
+        "title": "Problem pods",
+        "type": "stat",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "gridPos": {
+          "h": 4,
+          "w": 6,
+          "x": 6,
+          "y": 0
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "datasource": {
+              "type": "prometheus",
+              "uid": "prometheus"
+            },
+            "expr": "count(kube_pod_status_phase{namespace=\"wine-app\",phase=~\"Pending|Failed|Unknown\",pod=~\"backend.*|frontend.*|qdrant-[0-9a-z].*\"} == 1) or vector(0)",
+            "instant": true,
+            "format": "time_series"
+          }
+        ],
+        "options": {
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ]
+          }
+        }
+      },
+      {
+        "id": 3,
+        "title": "Backend RPS",
+        "type": "stat",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "gridPos": {
+          "h": 4,
+          "w": 6,
+          "x": 12,
+          "y": 0
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "datasource": {
+              "type": "prometheus",
+              "uid": "prometheus"
+            },
+            "expr": "sum(rate(backend_requests_total[1m]))",
+            "instant": true,
+            "format": "time_series"
+          }
+        ],
+        "options": {
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ]
+          }
+        }
+      },
+      {
+        "id": 4,
+        "title": "HTTP errors RPS",
+        "type": "stat",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "gridPos": {
+          "h": 4,
+          "w": 6,
+          "x": 18,
+          "y": 0
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "datasource": {
+              "type": "prometheus",
+              "uid": "prometheus"
+            },
+            "expr": "sum(rate(backend_requests_total{status=~\"4..|5..\"}[1m])) or vector(0)",
+            "instant": true,
+            "format": "time_series"
+          }
+        ],
+        "options": {
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ]
+          }
+        }
+      },
+      {
+        "id": 5,
+        "title": "Pods status - wine-app namespace",
+        "type": "table",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 24,
+          "x": 0,
+          "y": 4
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "datasource": {
+              "type": "prometheus",
+              "uid": "prometheus"
+            },
+            "expr": "kube_pod_status_phase{namespace=\"wine-app\",pod=~\"backend.*|frontend.*|qdrant.*\"} == 1",
+            "instant": true,
+            "format": "table"
+          }
+        ],
+        "transformations": [
+          {
+            "id": "organize",
+            "options": {
+              "excludeByName": {
+                "Time": true,
+                "__name__": true,
+                "container": true,
+                "endpoint": true,
+                "instance": true,
+                "job": true,
+                "namespace": true,
+                "service": true,
+                "uid": true,
+                "Value": true
+              },
+              "renameByName": {
+                "pod": "Pod",
+                "phase": "Status"
+              },
+              "indexByName": {
+                "pod": 0,
+                "phase": 1
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "title": "HTTP requests by pod / endpoint / status",
+        "type": "timeseries",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "gridPos": {
+          "h": 9,
+          "w": 24,
+          "x": 0,
+          "y": 12
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "datasource": {
+              "type": "prometheus",
+              "uid": "prometheus"
+            },
+            "expr": "sum by (pod, method, path, status) (rate(backend_requests_total[1m])) * on(pod) group_left() (kube_pod_status_phase{namespace=\"wine-app\",phase=\"Running\",pod=~\"backend.*\"} == 1)",
+            "instant": false,
+            "format": "time_series",
+            "legendFormat": "{{pod}} {{method}} {{path}} {{status}}"
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "title": "HTTP errors by pod",
+        "type": "timeseries",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 21
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "datasource": {
+              "type": "prometheus",
+              "uid": "prometheus"
+            },
+            "expr": "sum by (pod, status) (rate(backend_requests_total{status=~\"4..|5..\"}[1m])) or vector(0)",
+            "instant": false,
+            "format": "time_series",
+            "legendFormat": "{{pod}} {{status}}"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "title": "CPU usage by pod, %",
+        "type": "timeseries",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 21
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "datasource": {
+              "type": "prometheus",
+              "uid": "prometheus"
+            },
+            "expr": "100 * sum by (pod) (rate(container_cpu_usage_seconds_total{namespace=\"wine-app\"}[5m])) / sum by (pod) (kube_pod_container_resource_limits{namespace=\"wine-app\",resource=\"cpu\"})",
+            "instant": false,
+            "format": "time_series",
+            "legendFormat": "{{pod}}"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "title": "Memory usage by pod, %",
+        "type": "timeseries",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 29
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "datasource": {
+              "type": "prometheus",
+              "uid": "prometheus"
+            },
+            "expr": "100 * sum by (pod) (container_memory_working_set_bytes{namespace=\"wine-app\"}) / sum by (pod) (kube_pod_container_resource_limits{namespace=\"wine-app\",resource=\"memory\"})",
+            "instant": false,
+            "format": "time_series",
+            "legendFormat": "{{pod}}"
+          }
+        ]
+      },
+      {
+        "id": 10,
+        "title": "Container restarts by pod",
+        "type": "timeseries",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 29
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "datasource": {
+              "type": "prometheus",
+              "uid": "prometheus"
+            },
+            "expr": "sum by (pod) (increase(kube_pod_container_status_restarts_total{namespace=\"wine-app\",pod=~\"backend.*|frontend.*|qdrant-[0-9a-z].*\"}[30m])) * on(pod) group_left() (kube_pod_status_phase{namespace=\"wine-app\",phase=\"Running\",pod=~\"backend.*|frontend.*|qdrant-[0-9a-z].*\"} == 1)",
+            "instant": false,
+            "format": "time_series",
+            "legendFormat": "{{pod}}"
+          }
+        ]
+      }
+    ]
+  },
+  "folderId": 0,
+  "overwrite": true
+}
