@@ -1,3 +1,4 @@
+ # Синхронизирует манифесты из репозитория (путь k8s) в namespace wine-app
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:

@@ -1,3 +1,4 @@
+ # PVC для SonarQube — выделяет 10Gi постоянного хранилища для данных SonarQube
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -9,4 +10,8 @@ spec:
   resources:
     requests:
       storage: 10Gi
+
+
+
+
 
